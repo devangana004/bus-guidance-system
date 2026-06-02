@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
-public class BusUnitTest {
+public class BusTest {
 
     private BusRepository repo;
     private final String testFile = "data/test-buses.txt";

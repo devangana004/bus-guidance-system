@@ -3,23 +3,19 @@ package com.busdriver;
 import java.io.*;
 import java.util.*;
 
-/**
- * Manages all bus records.
- * Enforces bus validation rules B1-B5.
- * Saves and loads bus data from a TXT file.
- */
+
 public class BusRepository {
 
     private String filePath;
-    private List<BusUnitTest> buses;
+    private List<Bus> buses;  // FIX: was List<BusUnitTest> — changed to List<Bus>
 
     /**
-     * Constructor - loads existing buses from TXT file.
+     * Constructor — loads existing buses from TXT file.
      * @param filePath path to the TXT file
      */
     public BusRepository(String filePath) throws IOException {
         this.filePath = filePath;
-        this.buses = new ArrayList<>();
+        this.buses    = new ArrayList<>();
         loadFromFile();
     }
 
@@ -28,7 +24,7 @@ public class BusRepository {
      * Saves to TXT file after adding.
      * B1: busID must be unique and exactly 8 digits.
      */
-    public void addBus(BusUnitTest bus) 
+    public void addBus(Bus bus)   // FIX: was BusUnitTest
             throws ValidationException, IOException {
         validateBusID(bus.getBusID());
         if (retrieveBus(bus.getBusID()) != null) {
@@ -43,11 +39,9 @@ public class BusRepository {
      * Retrieves a bus by its ID.
      * Returns null if not found.
      */
-    public BusUnitTest retrieveBus(String busID) {
-        for (BusUnitTest bus : buses) {
-            if (bus.getBusID().equals(busID)) {
-                return bus;
-            }
+    public Bus retrieveBus(String busID) {  
+        for (Bus bus : buses) {
+            if (bus.getBusID().equals(busID)) return bus;
         }
         return null;
     }
@@ -57,9 +51,9 @@ public class BusRepository {
      * Enforces B2: capacity cannot increase.
      * Saves to TXT file after updating.
      */
-    public void updateBus(BusUnitTest updatedBus) 
+    public void updateBus(Bus updatedBus)  // FIX: was BusUnitTest
             throws ValidationException, IOException {
-        BusUnitTest existing = retrieveBus(updatedBus.getBusID());
+        Bus existing = retrieveBus(updatedBus.getBusID());
         if (existing == null) {
             throw new ValidationException(
                 "Bus not found: " + updatedBus.getBusID());
@@ -85,41 +79,35 @@ public class BusRepository {
     /**
      * Checks if a driver can drive a specific bus.
      * Enforces B3, B4, B5.
-     * B3: drivers older than 50 cannot drive buses 
-     *     with capacity >= 50.
-     * B4: Electricity buses need driver with 
-     *     >= 5 years experience.
-     * B5: Electricity and Hybrid buses need Heavy 
-     *     or PublicTransport licence.
+     * B3: drivers older than 50 cannot drive buses with capacity >= 50.
+     * B4: Electricity buses need driver with >= 5 years experience.
+     * B5: Electricity and Hybrid buses need Heavy or PublicTransport licence.
      */
-    public void checkDriverBusCompatibility(
-            Driver driver, BusUnitTest bus) throws ValidationException {
+    public void checkDriverBusCompatibility(Driver driver, Bus bus)  // FIX: was BusUnitTest
+            throws ValidationException {
 
         // B3: check driver age vs bus capacity
         int age = calculateAge(driver.getBirthdate());
         if (age > 50 && bus.getCapacity() >= 50) {
             throw new ValidationException(
-                "B3: Driver over 50 cannot drive bus " +
-                "with capacity >= 50.");
+                "B3: Driver over 50 cannot drive bus with capacity >= 50.");
         }
 
         // B4: check experience for Electricity buses
-        if (bus.getFuelType().equalsIgnoreCase("Electricity") 
+        if (bus.getFuelType().equalsIgnoreCase("Electricity")
                 && driver.getExperienceYears() < 5) {
             throw new ValidationException(
-                "B4: Electricity bus needs driver with " +
-                "at least 5 years experience.");
+                "B4: Electricity bus needs driver with at least 5 years experience.");
         }
 
         // B5: check licence for Electricity or Hybrid buses
-        if (bus.getFuelType().equalsIgnoreCase("Electricity") 
+        if (bus.getFuelType().equalsIgnoreCase("Electricity")
             || bus.getFuelType().equalsIgnoreCase("Hybrid")) {
             String licence = driver.getLicenseType();
-            if (!licence.equalsIgnoreCase("Heavy") && 
+            if (!licence.equalsIgnoreCase("Heavy") &&
                 !licence.equalsIgnoreCase("PublicTransport")) {
                 throw new ValidationException(
-                    "B5: Electricity/Hybrid buses need Heavy " +
-                    "or PublicTransport licence.");
+                    "B5: Electricity/Hybrid buses need Heavy or PublicTransport licence.");
             }
         }
     }
@@ -127,11 +115,9 @@ public class BusRepository {
     /**
      * Validates B1: busID must be exactly 8 digits only.
      */
-    private void validateBusID(String busID) 
-            throws ValidationException {
+    private void validateBusID(String busID) throws ValidationException {
         if (busID == null || !busID.matches("\\d{8}")) {
-            throw new ValidationException(
-                "B1: Bus ID must be exactly 8 digits.");
+            throw new ValidationException("B1: Bus ID must be exactly 8 digits.");
         }
     }
 
@@ -147,12 +133,8 @@ public class BusRepository {
             Calendar dob = Calendar.getInstance();
             dob.set(year, month - 1, day);
             Calendar today = Calendar.getInstance();
-            int age = today.get(Calendar.YEAR) 
-                    - dob.get(Calendar.YEAR);
-            if (today.get(Calendar.DAY_OF_YEAR) 
-                    < dob.get(Calendar.DAY_OF_YEAR)) {
-                age--;
-            }
+            int age = today.get(Calendar.YEAR) - dob.get(Calendar.YEAR);
+            if (today.get(Calendar.DAY_OF_YEAR) < dob.get(Calendar.DAY_OF_YEAR)) age--;
             return age;
         } catch (Exception e) {
             return 0;
@@ -170,12 +152,11 @@ public class BusRepository {
             String[] parts = line.split("\\|");
             if (parts.length < 4) continue;
             try {
-                String busID    = parts[0].trim();
-                int capacity    = Integer.parseInt(parts[1].trim());
+                String busID     = parts[0].trim();
+                int capacity     = Integer.parseInt(parts[1].trim());
                 double fuelLevel = Double.parseDouble(parts[2].trim());
-                String fuelType = parts[3].trim();
-                buses.add(new BusUnitTest(busID, capacity, 
-                                  fuelLevel, fuelType));
+                String fuelType  = parts[3].trim();
+                buses.add(new Bus(busID, capacity, fuelLevel, fuelType));
             } catch (NumberFormatException e) {
                 // skip malformed lines
             }
