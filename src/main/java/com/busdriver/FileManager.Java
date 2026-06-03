@@ -6,14 +6,10 @@ import java.util.*;
 
 /**
  * FileManager utility class.
- * Handles all file read/write operations for DriverRepository and BusRepository.
- * Pavi's implementation.
+ * Handles all file read/write for DriverRepository and BusRepository.
  */
 public class FileManager {
 
-    /**
-     * Reads entire file and returns content as a single String.
-     */
     public static String readFile(String filePath) {
         try {
             return new String(Files.readAllBytes(Paths.get(filePath)));
@@ -22,9 +18,6 @@ public class FileManager {
         }
     }
 
-    /**
-     * Writes a single String content to file.
-     */
     public static void writeFile(String filePath, String content) {
         try {
             Path path = Path.of(filePath);
@@ -37,17 +30,12 @@ public class FileManager {
         }
     }
 
-    /**
-     * Reads all lines from a file.
-     * Returns empty list if file doesn't exist.
-     */
     public static List<String> readAll(String filePath) {
         try {
             Path path = Paths.get(filePath);
             if (!Files.exists(path)) return new ArrayList<>();
             List<String> lines = new ArrayList<>();
             for (String line : Files.readAllLines(path)) {
-                // skip header/comment lines starting with #
                 if (!line.startsWith("#") && !line.trim().isEmpty()) {
                     lines.add(line);
                 }
@@ -58,12 +46,8 @@ public class FileManager {
         }
     }
 
-    /**
-     * Writes a list of objects to file with a header comment.
-     * Each object's toString() is written as one line.
-     */
     public static void writeAll(String filePath, String header,
-                                 List<?> items) throws IOException {
+                                List<?> items) throws IOException {
         Path path = Paths.get(filePath);
         if (path.getParent() != null) {
             Files.createDirectories(path.getParent());
