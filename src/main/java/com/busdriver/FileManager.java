@@ -59,14 +59,16 @@ public class FileManager {
         }
         Files.writeString(path, sb.toString());
     }
-    /**
-     * Deletes a file at the given path.
-     */
-    public static void deleteFile(String filePath) {
+
+    public static boolean deleteFile(String filePath) {
         try {
-            java.nio.file.Files.deleteIfExists(java.nio.file.Paths.get(filePath));
+            return Files.deleteIfExists(Paths.get(filePath));
         } catch (IOException e) {
-            // ignore
+            return false;
         }
+    }
+
+    public static boolean fileExists(String filePath) {
+        return Files.exists(Paths.get(filePath));
     }
 }
