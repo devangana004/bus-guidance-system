@@ -1,11 +1,9 @@
 package com.busdriver;
 
 /**
- * Custom exception thrown when a validation rule is broken.
- * For example: invalid busID, capacity increase attempt, etc.
+ * Custom exception for validation errors.
  */
 public class ValidationException extends Exception {
-
     public ValidationException(String message) {
         super(message);
     }
