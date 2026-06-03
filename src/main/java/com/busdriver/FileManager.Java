@@ -1,93 +1,62 @@
 package com.busdriver;
 
 import java.io.*;
+import java.nio.file.*;
 import java.util.*;
 
 /**
- * Handles TXT file reading and writing for repositories.
+ * FileManager utility class.
+ * Handles all file read/write for DriverRepository and BusRepository.
  */
 public class FileManager {
 
-    /**
-     * Prevents creating FileManager objects because this is a utility class.
-     */
-    private FileManager() {
+    public static String readFile(String filePath) {
+        try {
+            return new String(Files.readAllBytes(Paths.get(filePath)));
+        } catch (IOException e) {
+            return "";
+        }
     }
 
-    /**
-     * Saves all records to a TXT file.
-     */
-    public static void writeAll(String filePath,
-            String header, List<?> records) throws IOException {
-
-        File file = new File(filePath);
-
-        if (file.getParentFile() != null) {
-            file.getParentFile().mkdirs();
-        }
-
-        try (BufferedWriter writer = new BufferedWriter(
-                new FileWriter(file, false))) {
-
-            writer.write("# " + header);
-            writer.newLine();
-            writer.newLine();
-
-            for (Object record : records) {
-                writer.write(record.toString());
-                writer.newLine();
+    public static void writeFile(String filePath, String content) {
+        try {
+            Path path = Path.of(filePath);
+            if (path.getParent() != null) {
+                Files.createDirectories(path.getParent());
             }
+            Files.writeString(path, content);
+        } catch (IOException e) {
+            throw new RuntimeException("File write failed: " + e.getMessage());
         }
     }
 
-    /**
-     * Reads all valid data lines from a TXT file.
-     * Blank lines and comment lines are skipped.
-     */
-    public static List<String> readAll(String filePath)
-            throws IOException {
-
-        List<String> lines = new ArrayList<>();
-        File file = new File(filePath);
-
-        if (!file.exists()) {
-            return lines;
-        }
-
-        try (BufferedReader reader = new BufferedReader(
-                new FileReader(file))) {
-
-            String line;
-
-            while ((line = reader.readLine()) != null) {
-                line = line.trim();
-
-                if (!line.isEmpty() && !line.startsWith("#")) {
+    public static List<String> readAll(String filePath) {
+        try {
+            Path path = Paths.get(filePath);
+            if (!Files.exists(path)) return new ArrayList<>();
+            List<String> lines = new ArrayList<>();
+            for (String line : Files.readAllLines(path)) {
+                if (!line.startsWith("#") && !line.trim().isEmpty()) {
                     lines.add(line);
                 }
             }
+            return lines;
+        } catch (IOException e) {
+            return new ArrayList<>();
         }
-
-        return lines;
     }
 
-    /**
-     * Checks whether a file exists.
-     */
-    public static boolean fileExists(String filePath) {
-        return new File(filePath).exists();
-    }
-
-    /**
-     * Deletes a file if it exists.
-     */
-    public static boolean deleteFile(String filePath) {
-        File file = new File(filePath);
-
-        if (file.exists()) {
-            return file.delete();
+    public static void writeAll(String filePath, String header,
+                                List<?> items) throws IOException {
+        Path path = Paths.get(filePath);
+        if (path.getParent() != null) {
+            Files.createDirectories(path.getParent());
         }
-
-        return false;
+        StringBuilder sb = new StringBuilder();
+        sb.append("# ").append(header).append("\n");
+        for (Object item : items) {
+            sb.append(item.toString()).append("\n");
+        }
+        Files.writeString(path, sb.toString());
     }
 }
