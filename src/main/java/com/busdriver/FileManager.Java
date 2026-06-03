@@ -7,6 +7,8 @@ import java.util.*;
 /**
  * FileManager utility class.
  * Handles all file read/write for DriverRepository and BusRepository.
+ * Contributor: Merisha Arun (s4160798)
+ * Group 52 | ISYS3413 | Assignment 4
  */
 public class FileManager {
 
@@ -58,5 +60,25 @@ public class FileManager {
             sb.append(item.toString()).append("\n");
         }
         Files.writeString(path, sb.toString());
+    }
+
+    /**
+     * Deletes a file if it exists.
+     * @param filePath path to the file to delete
+     * @return true if deleted, false if not found
+     */
+    public static boolean deleteFile(String filePath) {
+        try {
+            return Files.deleteIfExists(Paths.get(filePath));
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Checks whether a file exists.
+     */
+    public static boolean fileExists(String filePath) {
+        return Files.exists(Paths.get(filePath));
     }
 }

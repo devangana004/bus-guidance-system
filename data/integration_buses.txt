@@ -1,0 +1,2 @@
+# Bus Data - Format: busID|capacity|fuelLevel|fuelType
+12345678|30|60.0|Hybrid
