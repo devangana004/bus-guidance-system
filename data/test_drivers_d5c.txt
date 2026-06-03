@@ -1,0 +1,2 @@
+# Driver Data - Format: driverID|name|experienceYears|licenseType|address|birthdate
+67@@bcXXAB|Tom|5|Heavy|99|New St|Sydney|NSW|Australia|15-06-1995
