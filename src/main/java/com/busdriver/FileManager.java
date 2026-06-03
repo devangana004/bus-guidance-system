@@ -62,11 +62,6 @@ public class FileManager {
         Files.writeString(path, sb.toString());
     }
 
-    /**
-     * Deletes a file if it exists.
-     * @param filePath path to the file to delete
-     * @return true if deleted, false if not found
-     */
     public static boolean deleteFile(String filePath) {
         try {
             return Files.deleteIfExists(Paths.get(filePath));
@@ -75,9 +70,6 @@ public class FileManager {
         }
     }
 
-    /**
-     * Checks whether a file exists.
-     */
     public static boolean fileExists(String filePath) {
         return Files.exists(Paths.get(filePath));
     }
