@@ -1,6 +1,7 @@
 package com.busdriver;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -8,6 +9,16 @@ import static org.junit.jupiter.api.Assertions.*;
  * Written by: Devangana
  */
 public class DriverTest {
+
+    @BeforeEach
+    void cleanUp() {
+        FileManager.deleteFile("data/test_drivers_d4.txt");
+        FileManager.deleteFile("data/test_drivers_d4b.txt");
+        FileManager.deleteFile("data/test_drivers_d4c.txt");
+        FileManager.deleteFile("data/test_drivers_d5.txt");
+        FileManager.deleteFile("data/test_drivers_d5b.txt");
+        FileManager.deleteFile("data/test_drivers_d5c.txt");
+    }
 
     // ========== D1: Driver ID Tests ==========
 
@@ -74,9 +85,9 @@ public class DriverTest {
 
     @Test
     void testD4_cannotChangeLicenseOver10Years() throws Exception {
+        DriverRepository repo = new DriverRepository("data/test_drivers_d4.txt");
         Driver driver = new Driver("23@@bcXXAB", "John", 11, "Heavy",
             "12|Main St|Melbourne|VIC|Australia", "15-06-1980");
-        DriverRepository repo = new DriverRepository("data/test_drivers_d4.txt");
         repo.addDriver(driver);
         Driver updated = new Driver("23@@bcXXAB", "John", 11, "Light",
             "12|Main St|Melbourne|VIC|Australia", "15-06-1980");
@@ -87,9 +98,9 @@ public class DriverTest {
 
     @Test
     void testD4_canChangeLicenseUnder10Years() throws Exception {
+        DriverRepository repo = new DriverRepository("data/test_drivers_d4b.txt");
         Driver driver = new Driver("34@@bcXXAB", "Jane", 5, "Light",
             "12|Main St|Melbourne|VIC|Australia", "15-06-1990");
-        DriverRepository repo = new DriverRepository("data/test_drivers_d4b.txt");
         repo.addDriver(driver);
         Driver updated = new Driver("34@@bcXXAB", "Jane", 5, "Heavy",
             "12|Main St|Melbourne|VIC|Australia", "15-06-1990");
@@ -98,9 +109,9 @@ public class DriverTest {
 
     @Test
     void testD4_exactly10YearsCanChange() throws Exception {
+        DriverRepository repo = new DriverRepository("data/test_drivers_d4c.txt");
         Driver driver = new Driver("44@@bcXXAB", "Sam", 10, "Light",
             "12|Main St|Melbourne|VIC|Australia", "15-06-1985");
-        DriverRepository repo = new DriverRepository("data/test_drivers_d4c.txt");
         repo.addDriver(driver);
         Driver updated = new Driver("44@@bcXXAB", "Sam", 10, "Heavy",
             "12|Main St|Melbourne|VIC|Australia", "15-06-1985");
@@ -111,9 +122,9 @@ public class DriverTest {
 
     @Test
     void testD5_cannotChangeDriverID() throws Exception {
+        DriverRepository repo = new DriverRepository("data/test_drivers_d5.txt");
         Driver driver = new Driver("45@@bcXXAB", "Bob", 3, "Light",
             "12|Main St|Melbourne|VIC|Australia", "15-06-1995");
-        DriverRepository repo = new DriverRepository("data/test_drivers_d5.txt");
         repo.addDriver(driver);
         Driver updated = new Driver("99@@bcXXAB", "Bob", 3, "Light",
             "12|Main St|Melbourne|VIC|Australia", "15-06-1995");
@@ -124,9 +135,9 @@ public class DriverTest {
 
     @Test
     void testD5_cannotChangeName() throws Exception {
+        DriverRepository repo = new DriverRepository("data/test_drivers_d5b.txt");
         Driver driver = new Driver("56@@bcXXAB", "Alice", 3, "Light",
             "12|Main St|Melbourne|VIC|Australia", "15-06-1995");
-        DriverRepository repo = new DriverRepository("data/test_drivers_d5b.txt");
         repo.addDriver(driver);
         Driver updated = new Driver("56@@bcXXAB", "NewName", 3, "Light",
             "12|Main St|Melbourne|VIC|Australia", "15-06-1995");
@@ -137,9 +148,9 @@ public class DriverTest {
 
     @Test
     void testD5_canUpdateOtherFields() throws Exception {
+        DriverRepository repo = new DriverRepository("data/test_drivers_d5c.txt");
         Driver driver = new Driver("67@@bcXXAB", "Tom", 3, "Light",
             "12|Main St|Melbourne|VIC|Australia", "15-06-1995");
-        DriverRepository repo = new DriverRepository("data/test_drivers_d5c.txt");
         repo.addDriver(driver);
         Driver updated = new Driver("67@@bcXXAB", "Tom", 5, "Heavy",
             "99|New St|Sydney|NSW|Australia", "15-06-1995");

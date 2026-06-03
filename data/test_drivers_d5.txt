@@ -1,2 +1,0 @@
-# Driver Data - Format: driverID|name|experienceYears|licenseType|address|birthdate
-45@@bcXXAB|Bob|3|Light|12|Main St|Melbourne|VIC|Australia|15-06-1995
